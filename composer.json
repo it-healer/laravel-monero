@@ -1,0 +1,44 @@
+{
+    "name": "it-healer/laravel-monero",
+    "description": "A library for Laravel that allows you to create and manage the Monero cryptocurrency.",
+    "homepage": "https://github.com/it-healer/laravel-monero",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "IT-HEALER",
+            "email": "info@it-healer.com"
+        }
+    ],
+    "keywords": [
+        "it-healer",
+        "laravel",
+        "monero",
+        "xmr",
+        "php"
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-curl": "*",
+        "ext-pcntl": "*",
+        "ext-posix": "*",
+        "illuminate/contracts": "^10.0|^11.0|^12.0",
+        "spatie/laravel-package-tools": "^1.15"
+    },
+    "autoload": {
+        "psr-4": {
+            "ItHealer\\LaravelMonero\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ItHealer\\LaravelMonero\\MoneroServiceProvider"
+            ],
+            "aliases": {
+                "Monero": "ItHealer\\LaravelMonero\\Facades\\Monero"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

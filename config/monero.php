@@ -1,0 +1,78 @@
+<?php
+
+return [
+    /*
+     * Touch Synchronization System (TSS) config
+     * If there are many nodes in the system, we synchronize only those that have been touched recently.
+     * You must update touch_at in MoneroWallet, if you want sync here.
+     */
+    'touch' => [
+        /*
+         * Is system enabled?
+         */
+        'enabled' => false,
+
+        /*
+         * The time during which the node is synchronized after touching it (in seconds).
+         */
+        'waiting_seconds' => 60 * 5,
+    ],
+
+    /*
+     * Sets the handler to be used when Monero Wallet has a new deposit.
+     */
+    'webhook_handler' => \ItHealer\LaravelMonero\WebhookHandlers\EmptyWebhookHandler::class,
+
+    /*
+     * Set model class to allow more customization.
+     *
+     * Api model must be or extend `ItHealer\LaravelMonero\Api\Api::class`
+     * MoneroNode model must be or extend `ItHealer\LaravelMonero\Models\MoneroNode::class`
+     * MoneroWallet model must be or extend `ItHealer\LaravelMonero\Models\MoneroWallet::class`
+     * MoneroAccount model must be or extend `ItHealer\LaravelMonero\Models\MoneroAccount::class`
+     * MoneroAddress model must be or extend `ItHealer\LaravelMonero\Models\MoneroAddress::class`
+     * MoneroDeposit model must be or extend `ItHealer\LaravelMonero\Models\MoneroDeposit::class`
+     */
+    'models' => [
+        'api' => \ItHealer\LaravelMonero\Api\Api::class,
+        'node' => \ItHealer\LaravelMonero\Models\MoneroNode::class,
+        'wallet' => \ItHealer\LaravelMonero\Models\MoneroWallet::class,
+        'account' => \ItHealer\LaravelMonero\Models\MoneroAccount::class,
+        'address' => \ItHealer\LaravelMonero\Models\MoneroAddress::class,
+        'deposit' => \ItHealer\LaravelMonero\Models\MoneroDeposit::class,
+        'transaction' => \ItHealer\LaravelMonero\Models\MoneroTransaction::class,
+    ],
+
+    /*
+     * You cannot work with multiple wallets in parallel.
+     * These settings are intended to be limiting.
+     */
+    'atomic_lock' => [
+        'prefix' => '\ItHealer\LaravelMonero',
+        'timeout' => 300,
+        'wait' => 15,
+    ],
+
+    /**
+     * Node script runner for BIP39
+     * binary_path - required, node execution path
+     * script_path - path for JS file, optional, default - from package
+     */
+    'node' => [
+        'binary_path' => 'node',
+        'script_path' => null,
+    ],
+
+    /**
+     * Wallet RPC Runner
+     * execute_path - path for execute "monero-wallet-rpc"
+     */
+    'wallet_rpc' => [
+        'execute_path' => base_path('monero-wallet-rpc'),
+        'ports' => [
+            'min' => 10240,
+            'max' => 32767
+        ],
+        'watcher_period' => 30,
+    ]
+];
