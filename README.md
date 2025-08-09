@@ -1,4 +1,4 @@
-![Pest Laravel Expectations](https://banners.beyondco.de/Laravel%20MONERO.png?theme=light&packageManager=composer+require&packageName=it-healer%2Flaravel-monero&pattern=architect&style=style_1&description=Monero+Wallet+Library+for+Laravel&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg)
+![Logo](docs/logo.jpeg)
 
 <a href="https://packagist.org/packages/it-healer/laravel-monero" target="_blank">
     <img style="display: inline-block; margin-top: 0.5em; margin-bottom: 0.5em" src="https://img.shields.io/packagist/v/it-healer/laravel-monero.svg?style=flat&cacheSeconds=3600" alt="Latest Version on Packagist">
@@ -85,6 +85,12 @@ Command for build JS script:
 npm i
 npm run build
 ```
+
+## Support
+
+- Telegram: [@biodynamist](https://t.me/biodynamist)
+- WhatsApp: [+905516294716](https://wa.me/905516294716)
+- Web: [it-healer.com](https://it-healer.com)
 
 ## Changelog
 
