@@ -29,6 +29,7 @@ class MoneroSync extends BaseConsole
 
         $model = Monero::getModelNode();
         $model::query()
+            ->where('available', true)
             ->orderBy('sync_at')
             ->each(function(MoneroNode $node) {
                 if( $this->touchEnable ) {

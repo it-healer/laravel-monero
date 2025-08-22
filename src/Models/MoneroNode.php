@@ -21,6 +21,9 @@ class MoneroNode extends Model
         'daemon',
         'pid',
         'sync_at',
+        'worked',
+        'worked_data',
+        'available',
     ];
 
     protected $hidden = [
@@ -32,6 +35,9 @@ class MoneroNode extends Model
         'password' => 'encrypted',
         'pid' => 'integer',
         'sync_at' => 'datetime',
+        'worked' => 'boolean',
+        'worked_data' => 'json',
+        'available' => 'boolean',
     ];
 
     public function wallets(): HasMany

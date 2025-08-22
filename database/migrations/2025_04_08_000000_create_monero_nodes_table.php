@@ -26,6 +26,12 @@ return new class extends Migration {
                 ->nullable();
             $table->timestamp('sync_at')
                 ->nullable();
+            $table->boolean('worked')
+                ->default(false);
+            $table->json('worked_data')
+                ->default('[]');
+            $table->boolean('available')
+                ->default(true);
             $table->timestamps();
         });
     }

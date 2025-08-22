@@ -39,6 +39,14 @@ class NodeSync extends BaseConsole
             $this->api = $this->node->api();
         }
         catch(\Exception $e) {
+            $this->node->update([
+                'worked' => false,
+                'worked_data' => [
+                    'error_at' => Date::now(),
+                    'error_message' => $e->getMessage(),
+                ],
+            ]);
+
             $this->log("Ошибка: {$e->getMessage()}", "error");
             return;
         }
@@ -63,6 +71,8 @@ class NodeSync extends BaseConsole
 
         $this->node->update([
             'sync_at' => Date::now(),
+            'worked' => true,
+            'worked_data' => [],
         ]);
 
         $this->log("Синхронизация ноды {$this->node->name} завершена!");

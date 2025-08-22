@@ -72,6 +72,7 @@ class SupervisorService extends BaseConsole
     protected function thread(): void
     {
         $nodes = $this->model::query()
+            ->where('available', true)
             ->whereNotNull('daemon')
             ->get();
 
