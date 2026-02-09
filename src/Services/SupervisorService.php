@@ -13,11 +13,13 @@ class SupervisorService extends BaseConsole
     protected string $model = MoneroNode::class;
     protected array $processes = [];
     protected int $watcherPeriod;
+    protected ProcessHealthChecker $healthChecker;
 
-    public function __construct()
+    public function __construct(ProcessHealthChecker $healthChecker)
     {
         $this->model = Monero::getModelNode();
         $this->watcherPeriod = (int)config('monero.wallet_rpc.watcher_period', 30);
+        $this->healthChecker = $healthChecker;
     }
 
     protected function log(string $message, ?string $type = null): void
@@ -80,13 +82,23 @@ class SupervisorService extends BaseConsole
         foreach( $nodes as $node ) {
             $activeNodesIDs[] = $node->id;
 
+            // Проверяем статус существующего процесса
+            if ($node->pid && isset($this->processes[$node->id])) {
+                $this->updateProcessStatus($node);
+
+                // Если процесс жив и работает, пропускаем запуск нового
+                if ($this->processes[$node->id]->isRunning() && !$this->isPortFree($node->host, $node->port)) {
+                    continue;
+                }
+            }
+
             if( !$this->isPortFree($node->host, $node->port) ) {
                 continue;
             }
 
             if( $node->pid ) {
                 $this->killPid($node->pid);
-                $node->update(['pid' => null]);
+                $node->update(['pid' => null, 'worked' => false]);
             }
 
             $this->log("Starting monero-wallet-rpc for node {$node->name}...");
@@ -95,11 +107,25 @@ class SupervisorService extends BaseConsole
                 $this->processes[$node->id] = $process;
                 $node->update([
                     'pid' => $process->getPid(),
+                    'worked' => true,
+                    'worked_data' => [
+                        'started_at' => now()->toIso8601String(),
+                        'method' => 'supervisor',
+                        'message' => 'Process started by supervisor',
+                    ],
                 ]);
                 $this->log("Started process with PID {$node->pid} for node {$node->name}");
             }
             catch(\Exception $e) {
                 $this->log("Error: {$e->getMessage()}", 'error');
+                $node->update([
+                    'worked' => false,
+                    'worked_data' => [
+                        'error' => $e->getMessage(),
+                        'method' => 'supervisor',
+                        'message' => 'Failed to start process',
+                    ],
+                ]);
             }
         }
 
@@ -175,6 +201,31 @@ class SupervisorService extends BaseConsole
             return false;
         }
         return true;
+    }
+
+    /**
+     * Обновляет статус процесса для ноды
+     */
+    protected function updateProcessStatus(MoneroNode $node): void
+    {
+        try {
+            // Используем быструю проверку по API
+            $result = $this->healthChecker->check($node, 'api');
+
+            $node->update([
+                'worked' => $result['status'],
+                'worked_data' => array_merge(
+                    $result['details'],
+                    ['last_check' => now()->toIso8601String()]
+                ),
+            ]);
+
+            if (!$result['status']) {
+                $this->log("Node {$node->name} health check failed: {$result['details']['message']}", 'error');
+            }
+        } catch (\Exception $e) {
+            $this->log("Failed to check node {$node->name} status: {$e->getMessage()}", 'error');
+        }
     }
 
     protected function killPid(int $pid): void

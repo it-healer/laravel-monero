@@ -106,4 +106,42 @@ class Monero
     {
         return $this->nodeAtomicLock($wallet->node, fn() => $this->walletAtomicLock($wallet, $callback, $wait), $wait);
     }
+
+    /**
+     * Проверяет статус процесса monero-wallet-rpc для ноды
+     *
+     * @param MoneroNode $node
+     * @param string $method Метод проверки: 'pid', 'port', 'api', 'full'
+     * @return array ['status' => bool, 'details' => array]
+     */
+    public function checkNodeStatus(MoneroNode $node, string $method = 'api'): array
+    {
+        return app(\ItHealer\LaravelMonero\Services\ProcessHealthChecker::class)
+            ->check($node, $method);
+    }
+
+    /**
+     * Проверяет и обновляет статус ноды в базе данных
+     *
+     * @param MoneroNode $node
+     * @param string $method Метод проверки: 'pid', 'port', 'api', 'full'
+     * @return MoneroNode
+     */
+    public function updateNodeStatus(MoneroNode $node, string $method = 'api'): MoneroNode
+    {
+        return app(\ItHealer\LaravelMonero\Services\ProcessHealthChecker::class)
+            ->updateNodeStatus($node, $method);
+    }
+
+    /**
+     * Проверяет все активные ноды и обновляет их статусы
+     *
+     * @param string $method Метод проверки
+     * @return array Статистика проверки
+     */
+    public function checkAllNodesStatus(string $method = 'api'): array
+    {
+        return app(\ItHealer\LaravelMonero\Services\ProcessHealthChecker::class)
+            ->checkAllNodes($method);
+    }
 }

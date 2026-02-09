@@ -4,6 +4,7 @@ namespace ItHealer\LaravelMonero;
 
 use ItHealer\LaravelMonero\Commands\MoneroCommand;
 use ItHealer\LaravelMonero\Commands\MoneroNodeSyncCommand;
+use ItHealer\LaravelMonero\Commands\MoneroStatusCommand;
 use ItHealer\LaravelMonero\Commands\MoneroSyncCommand;
 use ItHealer\LaravelMonero\Commands\MoneroWalletRPCCommand;
 use ItHealer\LaravelMonero\Commands\MoneroWalletSyncCommand;
@@ -25,6 +26,7 @@ class MoneroServiceProvider extends PackageServiceProvider
                 MoneroWalletSyncCommand::class,
                 MoneroWalletRPCCommand::class,
                 MoneroNodeSyncCommand::class,
+                MoneroStatusCommand::class,
             ])
             ->hasInstallCommand(function(InstallCommand $command) {
                 $command
